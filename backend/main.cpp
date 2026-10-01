@@ -1,48 +1,66 @@
 #include <iostream>
 #include "route/Location.h"
 #include "route/Graph.h"
+#include "route/Dijkstra.h"
 
 using namespace std;
 
 int main() {
-    cout << "===== SafeHer: Archie Route Module Test =====" << endl;
+    cout << "===== SafeHer: Route Engine Test =====" << endl;
     cout << endl;
 
-    // Testing Location class
-    Location location1(1, "Graphic Era University");
-    Location location2(2, "Paltan Bazaar");
-
-    cout << "Location 1: " << location1.getName() << endl;
-    cout << "Location 2: " << location2.getName() << endl;
-    cout << endl;
-
-    // Creating the Dehradun route graph
+    // Create Dehradun route graph.
     Graph dehradunGraph;
 
-    // Route 1
+    // Route 1: Total distance = 6 km
     dehradunGraph.addEdge("Graphic Era University", "Rajpur Road", 3);
     dehradunGraph.addEdge("Rajpur Road", "Clock Tower", 2);
     dehradunGraph.addEdge("Clock Tower", "Paltan Bazaar", 1);
 
-    // Route 2
+    // Route 2: Total distance = 9 km
     dehradunGraph.addEdge("Graphic Era University", "Nehru Colony", 4);
     dehradunGraph.addEdge("Nehru Colony", "Patel Nagar", 2);
     dehradunGraph.addEdge("Patel Nagar", "Paltan Bazaar", 3);
 
-    cout << "Dehradun route graph created successfully." << endl;
+    string source = "Graphic Era University";
+    string destination = "Paltan Bazaar";
+
+    cout << "Source: " << source << endl;
+    cout << "Destination: " << destination << endl;
     cout << endl;
 
-    cout << "--- Graph Connections ---" << endl;
-    dehradunGraph.displayGraph();
+    // Create Dijkstra object using graph.
+    Dijkstra routeFinder(dehradunGraph);
 
-    cout << endl;
-    cout << "Is Clock Tower present in the graph? ";
+    // Find the shortest route.
+    vector<string> shortestPath =
+        routeFinder.findShortestPath(source, destination);
 
-    if (dehradunGraph.hasLocation("Clock Tower")) {
-        cout << "Yes" << endl;
+    int shortestDistance =
+        routeFinder.getShortestDistance(source, destination);
+
+    cout << "--- Shortest Route Found by Dijkstra ---" << endl;
+
+    if (shortestPath.empty()) {
+        cout << "No route found between selected locations." << endl;
     } else {
-        cout << "No" << endl;
+        cout << "Path: ";
+
+        for (int i = 0; i < shortestPath.size(); i++) {
+            cout << shortestPath[i];
+
+            if (i < shortestPath.size() - 1) {
+                cout << " -> ";
+            }
+        }
+
+        cout << endl;
+        cout << "Total Distance: " << shortestDistance << " km" << endl;
     }
+
+    cout << endl;
+    cout << "Note: This is the shortest route calculation only." << endl;
+    cout << "Safety score will be calculated separately by SafetyAnalyzer." << endl;
 
     return 0;
 }

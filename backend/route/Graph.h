@@ -11,21 +11,17 @@ using namespace std;
 // DSA concept: Weighted Graph using Adjacency List.
 class Graph {
 private:
-    // Key = location name
-    // Value = list of connected locations and their distance
     map<string, vector<pair<string, int>>> adjacencyList;
 
 public:
-    // Adds a two-way road connection.
     void addEdge(string source, string destination, int distance);
 
-    // Returns all direct neighbors of a location.
     vector<pair<string, int>> getNeighbors(string location);
 
-    // Checks whether a location is present in the graph.
+    vector<string> getAllLocations();
+
     bool hasLocation(string location);
 
-    // Shows all connections for testing.
     void displayGraph();
 };
 
