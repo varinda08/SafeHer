@@ -4,35 +4,24 @@
 
 #include "route/Graph.h"
 #include "route/Dijkstra.h"
+#include "route/Route.h"
 
 using namespace std;
-
-// This function prints one route.
-void showRoute(vector<string> route, int distance) {
-    for (int i = 0; i < route.size(); i++) {
-        cout << route[i];
-
-        if (i < route.size() - 1) {
-            cout << " -> ";
-        }
-    }
-
-    cout << endl;
-    cout << "Distance: " << distance << " km" << endl;
-}
 
 int main() {
     cout << "========================================" << endl;
     cout << "        SAFEHER ROUTE SYSTEM" << endl;
     cout << "========================================" << endl;
 
-    // Create graph for sample Dehradun routes.
+    // Create graph for sample Dehradun locations.
     Graph dehradunGraph;
 
+    // Route A: 6 km
     dehradunGraph.addEdge("Graphic Era University", "Rajpur Road", 3);
     dehradunGraph.addEdge("Rajpur Road", "Clock Tower", 2);
     dehradunGraph.addEdge("Clock Tower", "Paltan Bazaar", 1);
 
+    // Route B: 9 km
     dehradunGraph.addEdge("Graphic Era University", "Nehru Colony", 4);
     dehradunGraph.addEdge("Nehru Colony", "Patel Nagar", 2);
     dehradunGraph.addEdge("Patel Nagar", "Paltan Bazaar", 3);
@@ -54,11 +43,11 @@ int main() {
     cout << "Enter destination exactly as shown: ";
     getline(cin, destination);
 
-    // Check source and destination in the graph.
+    // Validate user input.
     if (!dehradunGraph.hasLocation(source) ||
         !dehradunGraph.hasLocation(destination)) {
         cout << "\nInvalid location entered." << endl;
-        cout << "Please enter a location from the available list." << endl;
+        cout << "Please select a location from the available list." << endl;
         return 0;
     }
 
@@ -67,7 +56,7 @@ int main() {
         return 0;
     }
 
-    // Dijkstra finds the shortest route.
+    // Dijkstra calculates shortest distance route.
     Dijkstra routeFinder(dehradunGraph);
 
     vector<string> shortestPath =
@@ -76,51 +65,23 @@ int main() {
     int shortestDistance =
         routeFinder.getShortestDistance(source, destination);
 
-    cout << "\n========================================" << endl;
-    cout << "        AVAILABLE ROUTE INFORMATION" << endl;
-    cout << "========================================" << endl;
-
     if (shortestPath.empty()) {
-        cout << "No route found between selected locations." << endl;
+        cout << "\nNo route found between selected locations." << endl;
         return 0;
     }
 
-    cout << "\nShortest Route (Dijkstra):" << endl;
-    showRoute(shortestPath, shortestDistance);
+    // Route object stores complete route details.
+    Route selectedRoute(shortestPath, shortestDistance);
 
-    // Prototype route options for the main demo case.
-    if (source == "Graphic Era University" &&
-        destination == "Paltan Bazaar") {
+    cout << "\n========================================" << endl;
+    cout << "       SHORTEST ROUTE INFORMATION" << endl;
+    cout << "========================================" << endl;
 
-        vector<string> routeA;
-        routeA.push_back("Graphic Era University");
-        routeA.push_back("Rajpur Road");
-        routeA.push_back("Clock Tower");
-        routeA.push_back("Paltan Bazaar");
+    selectedRoute.displayRoute();
 
-        vector<string> routeB;
-        routeB.push_back("Graphic Era University");
-        routeB.push_back("Nehru Colony");
-        routeB.push_back("Patel Nagar");
-        routeB.push_back("Paltan Bazaar");
-
-        cout << "\nOther Available Route Options:" << endl;
-
-        cout << "\nRoute A:" << endl;
-        showRoute(routeA, 6);
-
-        cout << "\nRoute B:" << endl;
-        showRoute(routeB, 9);
-
-        cout << "\nSafety analysis will be added by Devashish's module." << endl;
-        cout << "The final system will compare safety scores of Route A and Route B." << endl;
-    } else {
-        cout << "\nFor this prototype, detailed route comparison is available" << endl;
-        cout << "for Graphic Era University to Paltan Bazaar." << endl;
-    }
-
-    cout << "\nNote: Dijkstra gives shortest distance only." << endl;
-    cout << "Safety score is calculated separately by SafetyAnalyzer." << endl;
+    cout << "\nNote:" << endl;
+    cout << "Dijkstra calculates distance-based shortest path only." << endl;
+    cout << "Safety score and risk level will be added by SafetyAnalyzer." << endl;
 
     return 0;
 }
