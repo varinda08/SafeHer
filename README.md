@@ -35,9 +35,9 @@ SafeHer does not book buses, cabs, autos, bikes, or other transport. The user in
 
 ## Team
 
-- **Archie:** Location, Graph, Dijkstra, Route Engine and route data
+- **Archie:** frontend, Location, Graph, Dijkstra, Route Engine and route data
 - **Devashish:** Emergency services, incidents, safety analysis and SOS
-- **Vrinda:** User, guardian, trip, frontend and optional API integration
+- **Vrinda:** User, guardian, trip and optional API integration
 
 ## Academic Details
 
