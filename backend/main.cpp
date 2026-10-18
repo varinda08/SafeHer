@@ -1,48 +1,145 @@
 #include <iostream>
-#include "route/Location.h"
+#include <vector>
+#include <string>
+#include <sstream>
+
 #include "route/Graph.h"
+#include "route/Dijkstra.h"
+#include "route/Route.h"
 
 using namespace std;
 
-int main() {
-    cout << "===== SafeHer: Archie Route Module Test =====" << endl;
-    cout << endl;
+// ========================================
+// JSON ESCAPE
+// ========================================
 
-    // Testing Location class
-    Location location1(1, "Graphic Era University");
-    Location location2(2, "Paltan Bazaar");
+string jsonEscape(const string& text)
+{
+    string out;
 
-    cout << "Location 1: " << location1.getName() << endl;
-    cout << "Location 2: " << location2.getName() << endl;
-    cout << endl;
+    for (char c : text)
+    {
+        if (c == '"')
+            out += "\\\"";
+        else if (c == '\\')
+            out += "\\\\";
+        else if (c == '\n')
+            out += "\\n";
+        else
+            out += c;
+    }
 
-    // Creating the Dehradun route graph
+    return out;
+}
+
+// ========================================
+// ROUTE FUNCTION
+// ========================================
+
+int handleRoute(string source, string destination)
+{
     Graph dehradunGraph;
 
-    // Route 1
-    dehradunGraph.addEdge("Graphic Era University", "Rajpur Road", 3);
-    dehradunGraph.addEdge("Rajpur Road", "Clock Tower", 2);
-    dehradunGraph.addEdge("Clock Tower", "Paltan Bazaar", 1);
+    bool routesLoaded =
+        dehradunGraph.loadRoutesFromFile("../Data/routes.txt");
 
-    // Route 2
-    dehradunGraph.addEdge("Graphic Era University", "Nehru Colony", 4);
-    dehradunGraph.addEdge("Nehru Colony", "Patel Nagar", 2);
-    dehradunGraph.addEdge("Patel Nagar", "Paltan Bazaar", 3);
-
-    cout << "Dehradun route graph created successfully." << endl;
-    cout << endl;
-
-    cout << "--- Graph Connections ---" << endl;
-    dehradunGraph.displayGraph();
-
-    cout << endl;
-    cout << "Is Clock Tower present in the graph? ";
-
-    if (dehradunGraph.hasLocation("Clock Tower")) {
-        cout << "Yes" << endl;
-    } else {
-        cout << "No" << endl;
+    if (!routesLoaded)
+    {
+        cout << "{\"success\":false,\"message\":\"Route data could not be loaded\"}";
+        return 0;
     }
+
+    if (!dehradunGraph.hasLocation(source) ||
+        !dehradunGraph.hasLocation(destination))
+    {
+        cout << "{\"success\":false,\"message\":\"Invalid location\"}";
+        return 0;
+    }
+
+    if (source == destination)
+    {
+        cout << "{\"success\":false,\"message\":\"Source and destination cannot be same\"}";
+        return 0;
+    }
+
+    Dijkstra routeFinder(dehradunGraph);
+
+    vector<string> shortestPath =
+        routeFinder.findShortestPath(source, destination);
+
+    int shortestDistance =
+        routeFinder.getShortestDistance(source, destination);
+
+    if (shortestPath.empty())
+    {
+        cout << "{\"success\":false,\"message\":\"No route found\"}";
+        return 0;
+    }
+
+    // ========================================
+    // JSON RESPONSE
+    // ========================================
+
+    cout << "{";
+
+    cout << "\"success\":true,";
+    cout << "\"source\":\"" << jsonEscape(source) << "\",";
+    cout << "\"destination\":\"" << jsonEscape(destination) << "\",";
+    cout << "\"distance\":" << shortestDistance << ",";
+
+    cout << "\"path\":[";
+
+    for (int i = 0; i < shortestPath.size(); i++)
+    {
+        cout << "\"" << jsonEscape(shortestPath[i]) << "\"";
+
+        if (i < shortestPath.size() - 1)
+        {
+            cout << ",";
+        }
+    }
+
+    cout << "],";
+
+    // Safety values (Devashish module connect hone ke baad update honge)
+    cout << "\"safetyScore\":8,";
+    cout << "\"safetyLevel\":\"High\",";
+    cout << "\"policeStations\":0,";
+    cout << "\"hospitals\":0,";
+    cout << "\"publicPlaces\":0,";
+    cout << "\"incidents\":0,";
+
+    cout << "\"reasons\":[";
+    cout << "\"Route calculated using Dijkstra shortest path algorithm\"";
+    cout << "]";
+
+    cout << "}";
+
+    return 0;
+}
+
+// ========================================
+// MAIN
+// ========================================
+
+int main(int argc, char* argv[])
+{
+    // main.exe route source destination
+
+    if (argc == 4 && string(argv[1]) == "route")
+    {
+        return handleRoute(argv[2], argv[3]);
+    }
+
+    // Old format: main.exe "source" "destination"
+
+    if (argc == 3)
+    {
+        return handleRoute(argv[1], argv[2]);
+    }
+
+    cout << "SAFEHER BACKEND" << endl;
+    cout << "Available command: route <source> <destination>" << endl;
 
     return 0;
 }

@@ -1,0 +1,8 @@
+Clock Tower|Clock Tower Police Station
+ISBT|ISBT Police Station
+Rajpur Road|Rajpur Police Station
+Cantonment|Cantonment Police Station
+Railway Station|Railway Police Station
+Prem Nagar|Prem Nagar Police Station
+Ballupur|Ballupur Police Station
+GMS|GMS Police Chowki

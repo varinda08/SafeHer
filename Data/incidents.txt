@@ -1,0 +1,6 @@
+1|Clock Tower|Reported harassment|4
+2|ISBT|Street theft|3
+3|Rajpur Road|Chain snatching|3
+4|Parade Ground|Minor altercation|2
+5|Railway Station|Pickpocketing|3
+6|Sahastradhara Road|Tourist scam|2

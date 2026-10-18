@@ -1,0 +1,10 @@
+Clock Tower|Main Market
+Parade Ground|Public Ground
+ISBT|Bus Terminal
+Rajpur Road|Shopping Complex
+Cantonment|Cantonment Area
+Railway Station|Station Plaza
+GMS|Medical College Campus
+Prem Nagar|IT Park
+Ballupur|Sports Complex
+Sahastradhara Road|Tourist Area

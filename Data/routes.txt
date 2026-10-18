@@ -1,0 +1,10 @@
+Graphic Era University|Rajpur Road|3
+Rajpur Road|Clock Tower|4
+Clock Tower|Paltan Bazaar|1
+Paltan Bazaar|Nehru Colony|3
+Nehru Colony|Patel Nagar|4
+Patel Nagar|Graphic Era University|5
+Clock Tower|Patel Nagar|3
+Rajpur Road|Nehru Colony|4
+Graphic Era University|Nehru Colony|6
+Clock Tower|Rajpur Road|4
