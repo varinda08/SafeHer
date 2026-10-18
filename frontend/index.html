@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeHer | Travel Safely</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- ================= LOGIN ================= -->
+        <section id="loginScreen" class="screen login-screen active">
+
+            <div class="login-left">
+                <div class="brand-large">
+                    <div class="brand-heart">♡</div>
+                    <div>
+                        <h1>SafeHer</h1>
+                        <p>Travel with confidence.</p>
+                    </div>
+                </div>
+
+                <div class="login-intro">
+                    <span class="small-label">YOUR SAFETY. YOUR JOURNEY.</span>
+                    <h2>Go anywhere.<br><span>Feel safer.</span></h2>
+                    <p>Plan your journey with safety-focused route analysis, emergency support and trusted contacts —
+                        all in one place.</p>
+                </div>
+
+                <div class="login-features">
+                    <div><span>01</span>
+                        <p>Safety-focused routes</p>
+                    </div>
+                    <div><span>02</span>
+                        <p>Emergency assistance</p>
+                    </div>
+                    <div><span>03</span>
+                        <p>Trusted contact support</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="login-right">
+                <div class="auth-card">
+                    <div class="auth-heading">
+                        <span class="mini-heart">♡</span>
+                        <h2>Welcome back</h2>
+                        <p>Sign in to continue your SafeHer journey.</p>
+                    </div>
+
+                    <form id="loginForm">
+                        <label>Email or Mobile</label>
+                        <input type="text" id="loginEmail" placeholder="Enter your email or mobile" required>
+
+                        <label>Password</label>
+                        <div class="password-box">
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                            <button type="button" id="togglePassword">Show</button>
+                        </div>
+
+                        <button type="submit" class="primary-btn">Login <span>→</span></button>
+                    </form>
+
+                    <div class="divider"><span>or</span></div>
+
+                    <button class="outline-btn" id="openSignup">Create a new account</button>
+
+                    <p class="demo-note">SafeHer demo • Your information stays secure.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MAIN APP ================= -->
+        <div id="mainApp" class="hidden">
+
+            <header class="navbar">
+                <div class="logo" onclick="showScreen('plannerScreen')">
+                    <span>♡</span>
+                    <strong>SafeHer</strong>
+                </div>
+
+                <nav>
+                    <button onclick="showScreen('plannerScreen')">Home</button>
+                    <button onclick="showScreen('plannerScreen')">Safe Route</button>
+                    <button onclick="showScreen('emergencyScreen')">Emergency</button>
+                    <button onclick="openProfile()">Profile</button>
+                </nav>
+
+                <button class="nav-emergency" onclick="showScreen('emergencyScreen')">SOS</button>
+            </header>
+
+            <!-- ================= PLANNER / HOME ================= -->
+            <section id="plannerScreen" class="screen app-screen">
+                <div class="page-container">
+
+                    <div class="welcome-row">
+                        <div>
+                            <span class="small-label">WELCOME TO SAFEHER</span>
+                            <h1>Where are you<br><span>going today?</span></h1>
+                            <p>Plan your journey across Dehradun with safety as the priority.</p>
+                        </div>
+
+                        <div class="quote-card">
+                            <span>♡</span>
+                            <p id="quoteText">"Every journey begins with a little courage."</p>
+                        </div>
+                    </div>
+
+                    <!-- QUICK STATS -->
+                    <div class="stats-strip">
+                        <div class="stat-item">
+                            <strong>6+</strong>
+                            <span>Safe locations</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>24/7</strong>
+                            <span>Emergency support</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>112</strong>
+                            <span>One-tap helpline</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>GPS</strong>
+                            <span>Location detection</span>
+                        </div>
+                    </div>
+
+                    <!-- SEARCH CARD -->
+                    <div class="planner-card">
+
+                        <div class="planner-header">
+                            <div>
+                                <span class="card-label">PLAN YOUR JOURNEY</span>
+                                <h2>Find your safe route</h2>
+                            </div>
+                            <div class="step-number">01</div>
+                        </div>
+
+                        <div class="route-search">
+
+                            <div class="search-field from-field">
+                                <span class="field-icon">⌖</span>
+                                <div class="field-content">
+                                    <small>FROM</small>
+                                    <input type="text" id="source" placeholder="Enter starting point"
+                                        autocomplete="off">
+                                </div>
+                                <div id="sourceSuggestions" class="suggestion-box hidden"></div>
+                            </div>
+
+                            <button type="button" id="swapLocations" class="swap-btn" title="Swap locations">⇄</button>
+
+                            <div class="search-field to-field">
+                                <span class="field-icon">♡</span>
+                                <div class="field-content">
+                                    <small>TO</small>
+                                    <input type="text" id="destination" placeholder="Enter destination"
+                                        autocomplete="off">
+                                </div>
+                                <div id="destinationSuggestions" class="suggestion-box hidden"></div>
+                            </div>
+
+                        </div>
+
+                        <small id="locationStatus" class="location-status">
+                            Choose from popular SafeHer locations or enter your own.
+                        </small>
+
+                        <div class="details-grid">
+                            <div class="input-group">
+                                <label>Travel Date</label>
+                                <input type="date" id="travelDate">
+                            </div>
+
+                            <div class="input-group">
+                                <label>Departure Time</label>
+                                <input type="time" id="travelTime">
+                            </div>
+
+                            <div class="input-group">
+                                <label>Travel Mode</label>
+                                <select id="travelMode">
+                                    <option value="Walking">Walking</option>
+                                    <option value="Driving">Car</option>
+                                    <option value="Two Wheeler">Two Wheeler</option>
+                                    <option value="Public Transport">Public Transport</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="routeError" class="error-message"></div>
+
+                        <button id="findRouteBtn" class="primary-btn large-btn">
+                            Search Safe Route <span>→</span>
+                        </button>
+
+                    </div>
+
+                    <!-- POPULAR DESTINATIONS -->
+                    <div class="popular-section">
+                        <div class="popular-header">
+                            <h3>Popular safe destinations</h3>
+                            <p>Tap a location to set it as your destination.</p>
+                        </div>
+
+                        <div class="popular-chips">
+                            <button class="chip" onclick="setQuickDestination('Graphic Era University')">Graphic Era
+                                University</button>
+                            <button class="chip" onclick="setQuickDestination('Rajpur Road')">Rajpur Road</button>
+                            <button class="chip" onclick="setQuickDestination('Clock Tower')">Clock Tower</button>
+                            <button class="chip" onclick="setQuickDestination('Paltan Bazaar')">Paltan Bazaar</button>
+                            <button class="chip" onclick="setQuickDestination('Nehru Colony')">Nehru Colony</button>
+                            <button class="chip" onclick="setQuickDestination('Patel Nagar')">Patel Nagar</button>
+                        </div>
+                    </div>
+
+                    <!-- HOW IT WORKS -->
+                    <div class="how-section">
+                        <div class="how-header">
+                            <span class="card-label">HOW SAFEHER WORKS</span>
+                            <h3>Three simple steps</h3>
+                        </div>
+
+                        <div class="how-grid">
+                            <div class="how-card">
+                                <span>01</span>
+                                <h4>Enter your journey</h4>
+                                <p>Choose your starting point and destination anywhere in Dehradun.</p>
+                            </div>
+
+                            <div class="how-card">
+                                <span>02</span>
+                                <h4>Get a safe route</h4>
+                                <p>SafeHer analyses the route and shows the safest recommended path on the map.</p>
+                            </div>
+
+                            <div class="how-card">
+                                <span>03</span>
+                                <h4>Stay protected</h4>
+                                <p>Use SOS, helplines and your trusted contact whenever you need support.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EMERGENCY QUICK ACCESS -->
+                    <div class="quick-emergency">
+                        <div>
+                            <span class="card-label">NEED HELP NOW?</span>
+                            <h3>Emergency assistance is one tap away.</h3>
+                            <p>Call 112 or open the full emergency support screen.</p>
+                        </div>
+
+                        <div class="quick-emergency-actions">
+                            <a href="tel:112" class="call-btn solid">Call 112</a>
+                            <button class="outline-btn small-outline" onclick="showScreen('emergencyScreen')">All
+                                helplines</button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ================= RESULTS ================= -->
+            <section id="resultsScreen" class="screen app-screen">
+                <div class="page-container">
+
+                    <button class="back-btn" onclick="showScreen('plannerScreen')">← Back to planner</button>
+
+                    <div class="results-heading">
+                        <div>
+                            <span class="small-label">ROUTE ANALYSIS</span>
+                            <h1>Your safe route</h1>
+                            <p id="routeSummary">Analysing your journey...</p>
+                        </div>
+
+                        <div class="route-status">
+                            <span class="status-dot"></span>
+                            SafeHer analysis ready
+                        </div>
+                    </div>
+
+                    <div class="results-layout">
+
+                        <div class="map-card">
+                            <div class="map-top">
+                                <div>
+                                    <span class="card-label">JOURNEY MAP</span>
+                                    <h3>Route overview</h3>
+                                </div>
+                                <span class="map-badge">Dehradun</span>
+                            </div>
+
+                            <div id="map" class="map-area"></div>
+                        </div>
+
+                        <div class="routes-panel">
+                            <div class="route-panel-heading">
+                                <h2>Recommended route</h2>
+                                <span id="routeCount">1 route found</span>
+                            </div>
+
+                            <div class="route-result-card recommended">
+                                <div class="route-card-top">
+                                    <div>
+                                        <span class="recommended-label" id="safetyLevelText">RECOMMENDED</span>
+                                        <h3>Safe Route</h3>
+                                    </div>
+
+                                    <div class="score">
+                                        <strong id="routeScore">--</strong>
+                                        <span>/ 10</span>
+                                    </div>
+                                </div>
+
+                                <div class="route-stats">
+                                    <div>
+                                        <span>Distance</span>
+                                        <strong id="routeDistance">-- km</strong>
+                                    </div>
+                                    <div>
+                                        <span>Safety</span>
+                                        <strong id="routeSafety">--</strong>
+                                    </div>
+                                </div>
+
+                                <div class="path-box">
+                                    <span>Route path</span>
+                                    <p id="routePath">Calculating...</p>
+                                </div>
+
+                                <button class="select-route-btn" onclick="selectRoute()">
+                                    Select this route <span>→</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= EMERGENCY ================= -->
+            <section id="emergencyScreen" class="screen app-screen">
+                <div class="page-container">
+
+                    <button class="back-btn" onclick="showScreen('plannerScreen')">← Back</button>
+
+                    <div class="emergency-header">
+                        <span class="small-label">EMERGENCY SUPPORT</span>
+                        <h1>You're not alone.</h1>
+                        <p>Quick access to emergency services and safety helplines.</p>
+                    </div>
+
+                    <div class="sos-card">
+                        <div class="sos-content">
+                            <span class="sos-label">EMERGENCY</span>
+                            <h2>Need immediate help?</h2>
+                            <p>Activate SOS to begin the emergency assistance flow.</p>
+
+                            <button class="sos-btn" id="sosBtn">
+                                <span>⚠</span> ACTIVATE SOS
+                            </button>
+                        </div>
+
+                        <div class="sos-circle">SOS</div>
+                    </div>
+
+                    <div class="emergency-grid">
+                        <div class="emergency-card">
+                            <div class="emergency-icon">112</div>
+                            <span class="helpline-label">NATIONAL EMERGENCY</span>
+                            <h3>Emergency Services</h3>
+                            <p>For immediate police, fire, medical and other emergency assistance.</p>
+                            <div class="helpline-number">112</div>
+                            <a href="tel:112" class="call-btn">Call 112 →</a>
+                        </div>
+
+                        <div class="emergency-card">
+                            <div class="emergency-icon">♀</div>
+                            <span class="helpline-label">WOMEN SAFETY</span>
+                            <h3>Women Helpline</h3>
+                            <p>Support and assistance for women facing distress or unsafe situations.</p>
+                            <div class="helpline-number">181</div>
+                            <a href="tel:181" class="call-btn">Call 181 →</a>
+                        </div>
+
+                        <div class="emergency-card">
+                            <div class="emergency-icon">P</div>
+                            <span class="helpline-label">WOMEN POLICE</span>
+                            <h3>Women Police Helpline</h3>
+                            <p>Contact the women police helpline for assistance in an emergency.</p>
+                            <div class="helpline-number">1091</div>
+                            <a href="tel:1091" class="call-btn">Call 1091 →</a>
+                        </div>
+
+                        <div class="emergency-card">
+                            <div class="emergency-icon">⌁</div>
+                            <span class="helpline-label">CYBER SAFETY</span>
+                            <h3>Cyber Crime Helpline</h3>
+                            <p>Report cyber fraud, online harassment and scams.</p>
+                            <div class="helpline-number">1930</div>
+                            <a href="tel:1930" class="call-btn">Call 1930 →</a>
+                        </div>
+
+                        <div class="emergency-card">
+                            <div class="emergency-icon">♡</div>
+                            <span class="helpline-label">CHILD SAFETY</span>
+                            <h3>Child Helpline</h3>
+                            <p>Emergency support and assistance for children in distress.</p>
+                            <div class="helpline-number">1098</div>
+                            <a href="tel:1098" class="call-btn">Call 1098 →</a>
+                        </div>
+
+                        <div class="emergency-card">
+                            <div class="emergency-icon">♡</div>
+                            <span class="helpline-label">PERSONAL SAFETY</span>
+                            <h3>Trusted Contact</h3>
+                            <p id="emergencyContactText">Your trusted emergency contact will appear here.</p>
+                            <div class="helpline-number">Saved Contact</div>
+                            <button class="call-btn" onclick="callTrustedContact()">Call Trusted Contact →</button>
+                        </div>
+                    </div>
+
+                    <div class="emergency-location">
+                        <div>
+                            <span class="card-label">CURRENT LOCATION</span>
+                            <h3 id="emergencyLocation">Location not detected yet</h3>
+                        </div>
+                        <button onclick="detectEmergencyLocation()" class="outline-btn small-outline">Detect
+                            Location</button>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= SIGNUP MODAL ================= -->
+        <div id="signupModal" class="modal">
+            <div class="modal-card">
+                <button class="close-modal" onclick="closeSignup()">×</button>
+
+                <div class="modal-heading">
+                    <span class="mini-heart">♡</span>
+                    <h2>Create your account</h2>
+                    <p>Set up your SafeHer profile.</p>
+                </div>
+
+                <form id="signupForm">
+                    <label>Full Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your full name" required>
+
+                    <label>Mobile Number</label>
+                    <input type="tel" id="signupMobile" placeholder="Enter mobile number" required>
+
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" placeholder="Enter email" required>
+
+                    <label>Password</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password" required>
+
+                    <div class="form-row">
+                        <div>
+                            <label>Emergency Contact</label>
+                            <input type="text" id="signupEmergencyName" placeholder="Contact name" required>
+                        </div>
+                        <div>
+                            <label>Contact Number</label>
+                            <input type="tel" id="signupEmergencyNumber" placeholder="Phone number" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="primary-btn large-btn">Create Account <span>→</span></button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ================= PROFILE MODAL ================= -->
+        <div id="profileModal" class="modal">
+            <div class="modal-card">
+                <button class="close-modal" onclick="closeProfile()">×</button>
+
+                <div class="profile-top">
+                    <div class="profile-avatar">♡</div>
+                    <div>
+                        <h2 id="profileName">SafeHer User</h2>
+                        <p>Your SafeHer account</p>
+                    </div>
+                </div>
+
+                <div class="profile-info">
+                    <div><span>Name</span><strong id="profileNameInfo">-</strong></div>
+                    <div><span>Mobile</span><strong id="profileMobile">-</strong></div>
+                    <div><span>Email</span><strong id="profileEmail">-</strong></div>
+                    <div><span>Emergency Contact</span><strong id="profileEmergency">-</strong></div>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="outline-btn" onclick="closeProfile()">Close</button>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TOAST ================= -->
+        <div id="toast" class="toast">
+            <span>♡</span>
+            <p id="toastMessage"></p>
+        </div>
+
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

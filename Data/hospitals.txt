@@ -1,0 +1,8 @@
+Clock Tower|Doon Hospital
+ISBT|Max Hospital
+Rajpur Road|Shri Mahant Indiresh Hospital
+Cantonment|Military Hospital
+Railway Station|Railway Hospital
+GMS|AIIMS Rishikesh (nearby)
+Prem Nagar|Himalayan Hospital
+Ballupur|Bone & Joint Hospital

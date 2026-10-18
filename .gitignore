@@ -1,3 +1,17 @@
 .vscode/
 *.exe
 *.o
+# SafeHer private/runtime data
+backend/data/users.txt
+.env
+.env.*
+!.env.example
+
+# SafeHer private files and build output
+**/users.txt
+*.exe
+*.o
+node_modules/
+.env
+.env.*
+!.env.example
