@@ -1,33 +1,86 @@
 #include "Graph.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
-// Adds a bidirectional connection because roads in this prototype
-// are considered usable in both directions.
-void Graph::addEdge(string source, string destination, int distance) {
-    adjacencyList[source].push_back(make_pair(destination, distance));
-    adjacencyList[destination].push_back(make_pair(source, distance));
+void Graph::addEdge(string source, string destination, int distance)
+{
+    graph[source].push_back(make_pair(destination, distance));
+    graph[destination].push_back(make_pair(source, distance));
 }
 
-// Returns all locations directly connected to the given location.
-vector<pair<string, int>> Graph::getNeighbors(string location) {
-    return adjacencyList[location];
+bool Graph::loadRoutesFromFile(string fileName)
+{
+    ifstream file(fileName);
+
+    if (!file.is_open())
+    {
+        cout << "Could not open route file: " << fileName << endl;
+        return false;
+    }
+
+    string line;
+
+    while (getline(file, line))
+    {
+        string source;
+        string destination;
+        string distanceText;
+
+        stringstream lineStream(line);
+
+        getline(lineStream, source, '|');
+        getline(lineStream, destination, '|');
+        getline(lineStream, distanceText, '|');
+
+        if (source == "" || destination == "" || distanceText == "")
+        {
+            continue;
+        }
+
+        int distance = stoi(distanceText);
+
+        addEdge(source, destination, distance);
+    }
+
+    file.close();
+
+    return true;
 }
 
-// Returns true when the location is available in the graph.
-bool Graph::hasLocation(string location) {
-    return adjacencyList.find(location) != adjacencyList.end();
+vector<pair<string, int>> Graph::getNeighbors(string location)
+{
+    return graph[location];
 }
 
-// Displays all locations and their connected routes.
-void Graph::displayGraph() {
-    for (auto item : adjacencyList) {
-        cout << item.first << " -> ";
+vector<string> Graph::getAllLocations()
+{
+    vector<string> locations;
 
-        for (auto connection : item.second) {
-            cout << connection.first
-                 << " (" << connection.second << " km) ";
+    for (auto item : graph)
+    {
+        locations.push_back(item.first);
+    }
+
+    return locations;
+}
+
+bool Graph::hasLocation(string location)
+{
+    return graph.find(location) != graph.end();
+}
+
+void Graph::displayGraph()
+{
+    for (auto item : graph)
+    {
+        cout << item.first << ": ";
+
+        for (auto road : item.second)
+        {
+            cout << road.first << "(" << road.second << " km) ";
         }
 
         cout << endl;

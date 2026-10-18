@@ -5,7 +5,8 @@
 
 using namespace std;
 
-class Location {
+class Location
+{
 private:
     int id;
     string name;
